@@ -6,3 +6,5 @@ Some handy references:
 - [NY Public Library](https://www.nypl.org/events/exhibitions/galleries/explorations/item/5392)
 - [Internet Archives](https://archive.org/details/astronomicumcsar00apia/mode/2up)
 - [Wikipedia](https://en.wikipedia.org/wiki/Astronomicum_Caesareum)
+
+Volvelle Component
