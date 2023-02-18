@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <style>
+            .book {
+                height: 1008px;
+                width: 756px;
+                position: absolute;
+                left: 1px;
+                top: 1px;
+                vertical-align: bottom;
+                padding: 0px;
+                margin: 0px;
+            }
+            .page {
+                background-image: url("img/page1.png");
+            }
+            .spinner {
+                background-image: url("img/circle2.png");
+                transform-origin: 363px 523px;
+                border-radius: 50%;
+                border: 2px solid black;
+            }
+        </style>
+
+        <script>
+            var curCircle = 0;
+
+function spinCircle(e)
+{
+    var msx = e.pageX - curCircle['divx'];
+    var msy = e.pageY - curCircle['divy'];
+    var mangle = Math.atan2(msy, msx);
+
+    var rotAngle = mangle - curCircle['mouseStartAngle'] + curCircle['imageStartAngle'];
+    curCircle.style.transform = "rotate(" + rotAngle + "rad)";
+    curCircle['curRot'] = rotAngle;
+
+    // Move any mangaged shape with the spinning circle.
+    if( curCircle['manage'] ) {
+        mcir = document.getElementById(curCircle['manage']);
+        mcir.style.left = (((curCircle['centerX']) + Math.cos(rotAngle) * curCircle['centerX']) - mcir.naturalWidth/2) + 'px';
+        mcir.style.top = (((curCircle['centerY']) + Math.sin(rotAngle) * curCircle['centerY']) - mcir.naturalHeight/2) + 'px';
+    }
+    e.preventDefault();
+    return false;
+}
+
+function stopSpin(e) {
+    // Mouse button is up. Stop spinning, reset things.
+    window.removeEventListener("mousemove", spinCircle );
+    window.removeEventListener("mouseup", stopSpin );
+    curCircle = 0;
+    return false;
+}
+
+function beginSpin(e) {
+    // A circle was clicked. Save the object for later, save             the origin x,y of the click for later.
+    curCircle = e.target;          // Target to Spin (divx,divy are center point)
+    curCircle['divx'] = 756 / 2;
+    curCircle['divy'] = 1008 / 2 + 1;
+
+    // Store the angle of the mouse at the start of the rotation, relative to the center of the image.
+    var msx = e.pageX - curCircle['divx'];
+    var msy = e.pageY - curCircle['divy'];
+    curCircle['mouseStartAngle'] = Math.atan2(msy, msx);
+    curCircle['imageStartAngle'] = curCircle['curRot'];
+
+    // Setup event listeners for the whole window. Watch for mouse move or button up to stop spinning.
+    window.addEventListener("mousemove", spinCircle, false );
+    window.addEventListener("mouseup", stopSpin, false );
+    e.preventDefault();    // Dont let the browser catch the click
+    return false;
+}
+
+function initCircle( cid) {
+    // Move single circle to center of div, setup listener
+    imgCircle = document.getElementById(cid);
+    imgCircle.addEventListener("mousedown", beginSpin, false );
+    imgCircle['curRot'] = 0;
+    imgCircle['mouseStartAngle'] = 0; // Math.atan2(msy, msx);
+    imgCircle.style.transform = "rotate(0deg)";
+}
+
+function initCircles() {
+    initCircle('spinner1');
+}
+
+/*
+$(document).ready(function()
+
+    var active_circle_id = -1;
+    var start_x = -1;
+    var start_y = -1;
+
+    function rotate_circle(circle_id, deg) {
+        let cobj = '#' + circle_id;
+        if( !$(cobj) )
+            return;
+        $(cobj).css({
+            'transform': 'rotate(' + deg + 'deg)',
+            '-moz-transform': 'rotate(' + deg + 'deg)',
+            '-o-transform': 'rotate(' + deg + 'deg)',
+            '-webkit-transform': 'rotate(' + deg + 'deg)'
+        });
+        $(cobj).offset(function(index, pc) {
+            console.log(circle_id + ': [' + index + ']: ' + pc.left + "," + pc.top + "-" + $(this).width() + "," + $(this).height() + ")");
+            // pc.left = pc.top = 100;
+            return pc;
+        });
+    }
+
+    var intervalID = -1;
+    $('#spinner1').on('mousedown', function(event) {
+        clearInterval(intervalID);
+        var spin_obj = null;
+        $('.spinner').each(function() {
+            this.degrees = this.degrees || 0;
+            p = $(this).offset();
+            cx = event.pageX - (p.left + $(this).width()/2);
+            cy = event.pageY - (p.top + $(this).width()/2);
+            d = Math.sqrt((cx*cx) + (cy*cy));
+            z = '0';
+            if(d <= $(this).width()) {
+                spin_obj = this;
+            }
+        });
+        if(spin_obj) {
+            intervalID = setInterval(function()
+               {
+                    spin_obj.degrees += 5;
+                    rotate_circle(spin_obj.id, spin_obj.degrees);
+                }, 2
+            );
+        }
+    });
+
+    $(document).on('mouseup', function() {
+        clearInterval(intervalID);
+        intervalID = 0;
+    });
+
+});
+*/
+        </script>
+    </head>
+
+    <body onload="initCircles();">
+        <div class="book page"></div>
+        <div id="spinner1" class="book spinner"></div>
+        <!-- script>var curCircle = 0;
+
+function spinCircle(e)
+{
+    var msx = e.pageX - curCircle['divx'];
+    var msy = e.pageY - curCircle['divy'];
+    var mangle = Math.atan2(msy, msx);
+
+    var rotAngle = mangle - curCircle['mouseStartAngle'] + curCircle['imageStartAngle'];
+    curCircle.style.transform = "rotate(" + rotAngle + "rad)";
+    curCircle['curRot'] = rotAngle;
+
+    // Move any mangaged shape with the spinning circle.
+    if( curCircle['manage'] ) {
+        mcir = document.getElementById(curCircle['manage']);
+        mcir.style.left = (((curCircle['centerX']) + Math.cos(rotAngle) * curCircle['centerX']) - mcir.naturalWidth/2) + 'px';
+        mcir.style.top = (((curCircle['centerY']) + Math.sin(rotAngle) * curCircle['centerY']) - mcir.naturalHeight/2) + 'px';
+    }
+    e.preventDefault();
+    return false;
+}
+
+function stopSpin(e) {
+    // Mouse button is up. Stop spinning, reset things.
+    window.removeEventListener("mousemove", spinCircle );
+    window.removeEventListener("mouseup", stopSpin );
+    curCircle = 0;
+    return false;
+}
+
+function beginSpin(e) {
+    // A circle was clicked. Save the object for later, save             the origin x,y of the click for later.
+    curCircle = e.target;          // Target to Spin (divx,divy are center point)
+    curCircle['divx'] = 756 / 2;
+    curCircle['divy'] = 1008 / 2 + 1;
+
+    // Store the angle of the mouse at the start of the rotation, relative to the center of the image.
+    var msx = e.pageX - curCircle['divx'];
+    var msy = e.pageY - curCircle['divy'];
+    curCircle['mouseStartAngle'] = Math.atan2(msy, msx);
+    curCircle['imageStartAngle'] = curCircle['curRot'];
+
+    // Setup event listeners for the whole window. Watch for mouse move or button up to stop spinning.
+    window.addEventListener("mousemove", spinCircle, false );
+    window.addEventListener("mouseup", stopSpin, false );
+    e.preventDefault();    // Dont let the browser catch the click
+    return false;
+}
+
+function initCircle( cid) {
+    // Move single circle to center of div, setup listener
+    imgCircle = document.getElementById(cid);
+    imgCircle.addEventListener("mousedown", beginSpin, false );
+    imgCircle['curRot'] = 0;
+    imgCircle['mouseStartAngle'] = 0; // Math.atan2(msy, msx);
+    imgCircle.style.transform = "rotate(0deg)";
+}
+
+function initCircles() {
+    initCircle('spinner1');
+}
+
+/*
+$(document).ready(function()
+
+    var active_circle_id = -1;
+    var start_x = -1;
+    var start_y = -1;
+
+    function rotate_circle(circle_id, deg) {
+        let cobj = '#' + circle_id;
+        if( !$(cobj) )
+            return;
+        $(cobj).css({
+            'transform': 'rotate(' + deg + 'deg)',
+            '-moz-transform': 'rotate(' + deg + 'deg)',
+            '-o-transform': 'rotate(' + deg + 'deg)',
+            '-webkit-transform': 'rotate(' + deg + 'deg)'
+        });
+        $(cobj).offset(function(index, pc) {
+            console.log(circle_id + ': [' + index + ']: ' + pc.left + "," + pc.top + "-" + $(this).width() + "," + $(this).height() + ")");
+            // pc.left = pc.top = 100;
+            return pc;
+        });
+    }
+
+    var intervalID = -1;
+    $('#spinner1').on('mousedown', function(event) {
+        clearInterval(intervalID);
+        var spin_obj = null;
+        $('.spinner').each(function() {
+            this.degrees = this.degrees || 0;
+            p = $(this).offset();
+            cx = event.pageX - (p.left + $(this).width()/2);
+            cy = event.pageY - (p.top + $(this).width()/2);
+            d = Math.sqrt((cx*cx) + (cy*cy));
+            z = '0';
+            if(d <= $(this).width()) {
+                spin_obj = this;
+            }
+        });
+        if(spin_obj) {
+            intervalID = setInterval(function()
+               {
+                    spin_obj.degrees += 5;
+                    rotate_circle(spin_obj.id, spin_obj.degrees);
+                }, 2
+            );
+        }
+    });
+
+    $(document).on('mouseup', function() {
+        clearInterval(intervalID);
+        intervalID = 0;
+    });
+
+});
+*/</script -->
+    </body>
+
+</html>
