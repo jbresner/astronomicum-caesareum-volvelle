@@ -1,5 +1,5 @@
-# Astronomicum Caesareum
-An interactive version of the Astronomicum Caesareum
+# Astronomicum Caesareum Interactive Volvelle
+An interactive proof of concept rotating one of twenty-one volvelles (a rotating part of the physical book used to deterimine planentary positions) that make up the Astronomicum Caesareum. 
 
 Reference Links
 - [The Met](https://www.metmuseum.org/art/collection/search/337061)
